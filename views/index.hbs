@@ -1,6 +1,16 @@
 <div class="content">
 <h1>Current weather data</h1>
 
+{{#if err}}
+    <h3>{{err}}</h3>
+{{else}}
+    <ul>
+        {{#each data}}
+            <li>{{@key}} : {{this}}</li>
+            {{/each}}
+    </ul>
+{{/if}}
+
 <ul>
     {{#each data}}
     <li>{{@key}} : {{this}}</li>
@@ -12,7 +22,7 @@
     <label for="location">Location: </label>
     <input type="text" name="location">
     <label for="countryCode">Country Code: </label>
-    <input type="text" name="countryCode">
+    <input type="text" name="country">
     <br>
     <input type="submit" value="send">
 </form>

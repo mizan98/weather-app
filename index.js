@@ -3,11 +3,15 @@ const path = require('path');
 const bodyParser = require('body-parser')
 const express = require('express') 
 const app = express()
-const getWeather = require('./lib/getWeather')
+
+const routes = require('./routes/routes')
 
 app.use(express.static(path.join(__dirname, 'public')))   //__dirname is the full path of the repository
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json());
+
+app.use('/', routes)
+
 app.engine('.hbs', hbs({
     defaultLayout: 'layout',
     extname: '.hbs'
@@ -24,11 +28,19 @@ app.post('/', async(req, res) => {
     let countryCode = req.body.country
     let data = await getWeather(location, countryCode)
 
-    let temp = data.main.temp
-    let humidity = data.main.humidity 
-    let description = data.weather[0].description
+    if (data.list[0]){
+        let humidity = data.list[0].main.humidity; 
+        let description = data.list[0].weather[0].description;
+        let temp = data.list[0].main.temp;
 
-    res.render('index', {data: {temp, humidity, description, location, countryCode}}) 
+        res.render('index', {data: {temp, humidity, description}})
+    } else{
+        res.render('index', {err: "The location you have entered doesn't exist."})
+    }
+    // let temp = data.main.temp
+    
+
+    // res.render('index', {data: {temp, humidity, description, location, countryCode}}) 
 })
 
 
